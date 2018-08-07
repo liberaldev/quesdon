@@ -11,7 +11,7 @@ const schema = new mongoose.Schema({
     accessToken: {type: String, required: true},
     url: {type: String},
     description: {type: String, default: ""},
-    questionBoxName: {type: String, default: "質問箱"},
+    questionBoxName: {type: String, default: "질문 상자"},
     pushbulletAccessToken: {type: String},
     allAnon: {type: Boolean, default: false},
     upstreamId: {type: String},

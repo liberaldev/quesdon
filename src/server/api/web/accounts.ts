@@ -146,7 +146,7 @@ router.post("/:acct/question", async (ctx) => {
             method: "POST",
             body: JSON.stringify({
                 type: "link",
-                body: "新しい質問です\nQ. " + question.question,
+                body: "새로운 질문이에요!\nQ. " + question.question,
                 url: BASE_URL + "/my/questions",
             }),
             headers: {

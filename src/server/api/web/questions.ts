@@ -63,7 +63,7 @@ router.post("/:id/answer", async (ctx) => {
             status: [
                 "A. ",
                 (question.answer!.length > 200
-                    ? question.answer!.substring(0, 200) + "...(続きはリンク先で)"
+                    ? question.answer!.substring(0, 200) + "..."
                     : question.answer),
                 "\n#quesdon ",
                 answerUrl,
@@ -79,7 +79,7 @@ router.post("/:id/answer", async (ctx) => {
         }
         if (question.isNSFW) {
             body.status = "Q. " + question.question + "\n" + body.status
-            body.spoiler_text = "⚠ この質問は回答者がNSFWであると申告しています #quesdon"
+            body.spoiler_text = "⚠ 이 질문은 답변자가 NSFW하다고 했어요. #quesdon"
         }
         fetch("https://" + user!.acct.split("@")[1] + "/api/v1/statuses", {
             method: "POST",

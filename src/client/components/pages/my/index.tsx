@@ -15,7 +15,7 @@ export class PageMyIndex extends React.Component {
             <p>반가워요, {me.name}님!</p>
             <ul>
                 <li><Link to={`/@${me.acct}`}>프로필 페이지</Link></li>
-                <li><Link to="/my/questions">받은 질문<QuestionRemaining/></Link></li>
+                <li><Link to="/my/questions">아직 답변하지 않은 질문<QuestionRemaining/></Link></li>
                 {!me.isTwitter && <li><Link to="/my/followers">Quesdon@Planet을 사용중인 팔로워 목록</Link></li>}
                 <li><Link to="/my/settings">설정</Link></li>
                 <li><a href="javascript://" onClick={this.logoutConfirm.bind(this)}>로그아웃</a></li>

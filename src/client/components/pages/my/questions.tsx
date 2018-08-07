@@ -28,7 +28,7 @@ export class PageMyQuestions extends React.Component<{}, State> {
         } = this.state
         return <div>
             <Title>질문 목록 - 마이페이지</Title>
-            <h1>질문 목록</h1>
+            <h1>아직 답변하지 않은 질문 목록</h1>
             <Link to="/my">마이페이지로 돌아가기</Link>
             <div className="mt-3">
                 {loading

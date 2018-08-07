@@ -1,0 +1,16 @@
+version: '3'
+services:
+  db:
+    image: 'mongo:3.6'
+  app:
+    build:
+      context: .
+    ports:
+      - '17323:17323'
+    links:
+      - db
+    environment:
+      - MONGODB_URL=mongodb://db/quesdon
+      - VIRTUAL_HOST=http://localhost:17323
+      - BACK_PORT=17323
+

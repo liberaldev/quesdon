@@ -9,7 +9,7 @@ export class Footer extends React.Component {
                 Quesdon@Planet은 <a href="https://quesdon.rinsuki.net/">Quesdon</a>의 포크로,
                 AGPL-3.0 라이센스로 제공되고 있어요.
                 <a href={upstreamUrl}>소스 코드</a>&nbsp;
-                (<a href={`${upstreamUrl}/commits/${gitVersion}`}>{gitVersion.slice(0, 7)}</a>) /
+                (<a href={`${upstreamUrl}/commits/${gitVersion}`}>{gitVersion.slice(0, 7)}</a>) /&nbsp;
                 <a href="https://github.com/rinsuki/quesdon">원본 소스 코드 (rinsuki/quesdon)</a>&nbsp;
                 </p>
             <p>

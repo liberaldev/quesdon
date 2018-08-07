@@ -75,7 +75,7 @@ router.post("/:id/answer", async (ctx) => {
             if (question.questionUser.hostName === "twitter.com") {
                 questionUserAcct = "https://twitter.com/" + question.questionUser.acct.replace(/:.+/, "")
             }
-            body.status = "質問者: " + questionUserAcct + "\n" + body.status
+            body.status = "질문자: " + questionUserAcct + "\n" + body.status
         }
         if (question.isNSFW) {
             body.status = "Q. " + question.question + "\n" + body.status

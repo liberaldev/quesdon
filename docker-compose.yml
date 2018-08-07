@@ -11,6 +11,6 @@ services:
       - db
     environment:
       - MONGODB_URL=mongodb://db/quesdon
-      - VIRTUAL_HOST=localhost:17323
+      - VIRTUAL_HOST=quesdon.planet.moe
       - BACK_PORT=17323
 

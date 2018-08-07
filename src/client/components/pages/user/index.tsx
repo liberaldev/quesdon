@@ -35,27 +35,27 @@ export class PageUserIndex extends React.Component<Props, State> {
         const { user } = this.state
         if (!user) return <Loading/>
         return <div>
-            <Title>{user.name} @{user.acctDisplay} さんの{user.questionBoxName}</Title>
+            <Title>{user.name}님의 {user.questionBoxName || "질문함"}</Title>
             <Jumbotron><div style={{textAlign: "center"}}>
                 <img src={user.avatarUrl} style={{maxWidth: "8em", height: "8em"}}/>
                 <h1>{user.name}</h1>
                 <p>
-                    さんの{user.questionBoxName || "質問箱"}&nbsp;
+                    님의 {user.questionBoxName || "질문함"}&nbsp;
                     <a href={user.url || `https://${user.hostName}/@${user.acct.split("@")[0]}`}
                         rel="nofollow">
-                        {user.isTwitter ? "Twitter" : "Mastodon"}のプロフィール
+                        Mastodon 프로필
                     </a>
                 </p>
                 <p>{user.description}</p>
-                { user.stopNewQuestion ? <p>このユーザーは新しい質問を受け付けていません</p> :
+                { user.stopNewQuestion ? <p>지금은 더 이상 질문을 안 받고 있어요.</p> :
                 <form action="javascript://" onSubmit={this.questionSubmit.bind(this)}>
                     <Input type="textarea" name="question"
-                        placeholder="質問する内容を入力"
+                        placeholder="질문 내용을 입력해 주세요:"
                         onInput={this.questionInput.bind(this)}
                     />
                     <div className="d-flex mt-1">
                         {me && !user.allAnon && <div className="p-1">
-                            <Checkbox name="noAnon" value="true">名乗る</Checkbox>
+                            <Checkbox name="noAnon" value="true">작성자 공개</Checkbox>
                         </div>}
                         <div className="ml-auto">
                             <span className={"mr-3 " +
@@ -69,14 +69,14 @@ export class PageUserIndex extends React.Component<Props, State> {
                                     || this.state.questionLength > QUESTION_TEXT_MAX_LENGTH
                                     || this.state.questionNow
                                 }>
-                                質問{this.state.questionNow ? "中..." : "する"}
+                                질문{this.state.questionNow ? "중..." : "하기"}
                             </Button>
                         </div>
                     </div>
                 </form>
                 }
             </div></Jumbotron>
-                        <h2>回答&nbsp;{this.state.questions && <Badge pill>{this.state.questions.length}</Badge>}</h2>
+                        <h2>답변&nbsp;{this.state.questions && <Badge pill>{this.state.questions.length}</Badge>}</h2>
             {this.state.questions
             ?   <div>
                     {this.state.questions.map((question) =>
@@ -106,7 +106,7 @@ export class PageUserIndex extends React.Component<Props, State> {
             body: form,
         }).then((r) => r.json()).then((r) => {
             this.setState({questionNow: false})
-            alert("質問しました!")
+            alert("질문을 보냈어요!")
             location.reload()
         })
     }

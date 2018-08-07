@@ -6,13 +6,10 @@ import { PageLatest } from "./latest"
 export class PageIndex extends React.Component {
     render() {
         return <div>
-            <title>Quesdon</title>
-            <h1>Quesdon</h1>
-            <p>ザ・インタビューズとかaskfmとかそんなかんじのやつのMastodonアカウントで使えるやつです</p>
-            <p><strong>
-                2018年1月21日よりTwitterアカウントでも使えるようになりました。ログイン画面で「Twitterでログイン」をクリックするとTwitterアカウントで利用できます。
-            </strong></p>
-            <p>{me ? <Link to="/my">マイページ</Link> : <Link to="/login">ログイン</Link>}</p>
+            <title>Quesdon@Planet</title>
+            <h1>Quesdon@Planet</h1>
+            <p>Mastodon에서 사용할 수 있는 askfm스러운 무언가</p>
+            <p>{me ? <Link to="/my">마이페이지</Link> : <Link to="/login">로그인</Link>}</p>
             <PageLatest />
         </div>
     }

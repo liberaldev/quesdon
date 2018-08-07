@@ -32,7 +32,7 @@ export class PageUserQuestion extends React.Component<Props, State> {
     render() {
         if (!this.state.question) return <Loading/>
         return <div>
-            <Title>{this.state.question.user.name} さん宛ての質問: 「{this.state.question.question}」</Title>
+            <Title>{this.state.question.user.name}님이 보낸 질문: "{this.state.question.question}"</Title>
             <Question {...this.state.question} noNsfwGuard/>
         </div>
     }

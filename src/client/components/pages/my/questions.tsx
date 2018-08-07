@@ -27,24 +27,24 @@ export class PageMyQuestions extends React.Component<{}, State> {
             questions,
         } = this.state
         return <div>
-            <Title>質問一覧 - マイページ</Title>
-            <h1>質問一覧</h1>
-            <Link to="/my">マイページへ</Link>
+            <Title>질문 목록 - 마이페이지</Title>
+            <h1>질문 목록</h1>
+            <Link to="/my">마이페이지로 돌아가기</Link>
             <div className="mt-3">
                 {loading
                     ? <Loading/>
                     : loadFailed
                         ?   <span>
-                            読み込みに失敗しました({ loadFailed < 0 ? loadFailed : "HTTP-" + loadFailed })。
-                            <a href="javascript://" onClick={this.load.bind(this)}>再度読み込む</a>
+                            불러오기에 실패했어요.({ loadFailed < 0 ? loadFailed : "HTTP-" + loadFailed })。
+                            <a href="javascript://" onClick={this.load.bind(this)}>새로고침</a>
                             </span>
                         : questions.map((q) => <Question {...q} hideAnswerUser key={q._id}/>)
                 }
             </div>
             <Button href={this.getShareUrl()} color="secondary" target="_blank">
-                自分の質問箱のページを共有
+                Mastodon에 질문상자 페이지를 공유
                 <wbr />
-                (新しいページで開きます)
+                (새 창으로 열릴 거에요)
             </Button>
         </div>
     }
@@ -86,7 +86,7 @@ export class PageMyQuestions extends React.Component<{}, State> {
     }
     getShareUrl() {
         const user = (window as any).USER as APIUser
-        const text = `私の${user.questionBoxName || "質問箱"}です #quesdon ${location.origin}/@${user.acct}`
+        const text = `저의 ${user.questionBoxName || "질문 상자"}에요! #quesdon ${location.origin}/@${user.acct}`
         return `https://${user.hostName}/${user.isTwitter ? "intent/tweet" : "share"}?text=${encodeURIComponent(text)}`
     }
 }

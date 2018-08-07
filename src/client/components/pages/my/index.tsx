@@ -10,20 +10,20 @@ export class PageMyIndex extends React.Component {
     render() {
         if (!me) return null
         return <div>
-            <Title>マイページ</Title>
-            <h1>マイページ</h1>
-            <p>こんにちは、{me.name}さん!</p>
+            <Title>마이페이지</Title>
+            <h1>마이페이지</h1>
+            <p>반가워요, {me.name}님!</p>
             <ul>
-                <li><Link to={`/@${me.acct}`}>あなたのプロフィール</Link></li>
-                <li><Link to="/my/questions">あなた宛ての質問<QuestionRemaining/></Link></li>
-                {!me.isTwitter && <li><Link to="/my/followers">Quesdonを利用しているフォロワー一覧</Link></li>}
-                <li><Link to="/my/settings">設定</Link></li>
-                <li><a href="javascript://" onClick={this.logoutConfirm.bind(this)}>ログアウト</a></li>
+                <li><Link to={`/@${me.acct}`}>프로필 페이지</Link></li>
+                <li><Link to="/my/questions">받은 질문<QuestionRemaining/></Link></li>
+                {!me.isTwitter && <li><Link to="/my/followers">Quesdon@Planet을 사용중인 팔로워 목록</Link></li>}
+                <li><Link to="/my/settings">설정</Link></li>
+                <li><a href="javascript://" onClick={this.logoutConfirm.bind(this)}>로그아웃</a></li>
             </ul>
         </div>
     }
     logoutConfirm() {
-        if (!confirm("ログアウトしていい?")) return
+        if (!confirm("정말 로그아웃 하실 건가요?")) return
         apiFetch("/api/web/logout")
             .then((r) => r.json())
             .then((r) => {

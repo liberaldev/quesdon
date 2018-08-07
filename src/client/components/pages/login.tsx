@@ -19,33 +19,18 @@ export class PageLogin extends React.Component<{}, State> {
     render() {
         const { loading } = this.state
         return <div>
-            <Title>ログイン</Title>
-            <h1>ログイン</h1>
-            <p>あなたのMastodonアカウントがあるインスタンスを入力してください。</p>
+            <Title>로그인</Title>
+            <h1>로그인</h1>
+            <p>사용중인 Mastodon 계정이 있는 인스턴스를 입력해 주세요.</p>
             <form action="javascript://" onSubmit={this.send.bind(this)}>
                 <FormGroup>
-                    <Input name="instance" placeholder="mastodon.social" list="major-instances"/>
+                    <Input name="instance" placeholder="planet.moe" list="major-instances"/>
                     <datalist id="major-instances">
                         {majorInstances.map((instance) => <option value={instance} />)}
                     </datalist>
                 </FormGroup>
-                <Button type="submit" color="primary" disabled={loading}>{ loading ? "読み込み中" : "ログイン" }</Button>
-                <span>&nbsp;もしくは&nbsp;</span>
-                <Button type="button" color="secondary" disabled={loading} onClick={this.twitterLogin.bind(this)}>
-                    { loading ? "読み込み中" : "Twitterでログイン" }
-                </Button>
+                <Button type="submit" color="primary" disabled={loading}>{ loading ? "불러오는 중" : "로그인" }</Button>
             </form>
-            <Alert color="danger" className="mt-3">
-                <h5>Twitterアカウントでのサービス提供終了について</h5>
-                <p>Twitterの開発者向けポリシー改定の影響で、QuesdonでのTwitterアカウントを利用したサービス提供を<strong>2018年9月30日</strong>に停止します。</p>
-                <p>これ以降は、TwitterアカウントでQuesdonにログインできなくなり、またTwitterアカウントで開設した質問箱で回答した質問等も閲覧できなくなります。</p>
-                <p>Mastodonアカウントへの質問データの移行は、該当するTwitterアカウントからTwitter
-                    <a href="https://twitter.com/quesdon">@quesdon</a>
-                    までダイレクトメッセージでお問い合わせください。
-                </p>
-                <p>ご利用ありがとうございました。</p>
-                <strong>なお、Mastodonアカウントでログインされているユーザーの皆様には影響はありません。</strong>これまで通りサービスをご利用いただけます。
-            </Alert>
         </div>
     }
 
@@ -58,7 +43,7 @@ export class PageLogin extends React.Component<{}, State> {
             loading: true,
         })
         function errorMsg(code: number | string) {
-            return "ログインに失敗しました。入力内容をご確認の上、再度お試しください (" + code + ")"
+            return "로그인에 실패했어요. 입력한 내용을 확인하신 후 다시 시도해 주세요. (" + code + ")"
         }
         const req = await apiFetch("/api/web/oauth/get_url", {
             method: "POST",
@@ -85,11 +70,5 @@ export class PageLogin extends React.Component<{}, State> {
         })
         if (!urlRes) return
         location.href = urlRes.url
-    }
-
-    twitterLogin() {
-        const form = new FormData()
-        form.append("instance", "twitter.com")
-        this.callApi(form)
     }
 }

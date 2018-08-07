@@ -22,54 +22,54 @@ export class PageMySettings extends React.Component<{}, State> {
             descriptionMax: 200,
             questionBoxNameMax: 10,
             descriptionCount: (me.description || "").length,
-            questionBoxNameCount: (me.questionBoxName || "質問箱").length,
+            questionBoxNameCount: (me.questionBoxName || "질문 상자").length,
             saving: false,
         }
     }
     render() {
         if (!me) return null
         return <div>
-            <Title>設定</Title>
-            <h1>設定</h1>
-            <Link to="/my">マイページに戻る</Link>
+            <Title>설정</Title>
+            <h1>설정</h1>
+            <Link to="/my">마이페이지로 돌아가기</Link>
             <form action="javascript://" onSubmit={this.onSubmit.bind(this)}>
                 <FormGroup>
-                    <label>ちょっとした説明</label>
+                    <label>간단한 설명</label>
                     <Input type="textarea" name="description"
-                        placeholder="しぶやのりんさんがすき"
+                        placeholder="이루어져라, 우리들의 꿈!"
                         onInput={this.inputDescription.bind(this)}
                         defaultValue={me.description}/>
-                    <FormText>あと{this.descriptionRemaining()}文字 改行は表示時に反映されません</FormText>
+                    <FormText>최대 {this.descriptionRemaining()}자, 줄바꿈은 표시되지 않아요</FormText>
                 </FormGroup>
                 <FormGroup>
-                    <label>「質問箱」の名称変更</label>
+                    <label>'질문 상자'의 이름</label>
                     <InputGroup>
-                        <InputGroupAddon addonType="prepend">◯◯◯さんの</InputGroupAddon>
-                        <Input type="text" name="questionBoxName" placeholder="質問箱"
+                        <InputGroupAddon addonType="prepend">누구누구 님의 </InputGroupAddon>
+                        <Input type="text" name="questionBoxName" placeholder="질문 상자"
                             onInput={this.inputQuestionBoxName.bind(this)}
-                            defaultValue={me.questionBoxName || "質問箱"}/>
+                            defaultValue={me.questionBoxName || "질문 상자"}/>
                     </InputGroup>
-                    <FormText>あと{this.questionBoxNameRemaining()}文字 改行は表示時に反映されません</FormText>
+                    <FormText>최대 {this.questionBoxNameRemaining()}자, 줄바꿈은 표시되지 않아요</FormText>
                 </FormGroup>
                 <FormGroup>
-                    <Checkbox name="allAnon" value="1" checked={me.allAnon}>自分宛ての質問では名乗らせない</Checkbox>
+                    <Checkbox name="allAnon" value="1" checked={me.allAnon}>질문을 익명으로만 받기</Checkbox>
                 </FormGroup>
                 <FormGroup>
-                    <Checkbox name="stopNewQuestion" value="1" checked={me.stopNewQuestion}>新たな質問を受け付けない</Checkbox>
+                    <Checkbox name="stopNewQuestion" value="1" checked={me.stopNewQuestion}>더 이상 질문을 안 받기</Checkbox>
                 </FormGroup>
                 <Button type="submit" color="primary" disabled={this.sendableForm()}>
-                    保存{this.state.saving && "しています..."}
+                    저장{this.state.saving && "중이에요..."}
                 </Button>
             </form>
-            <h2 className="mt-3 mb-2">プッシュ通知</h2>
+            <h2 className="mt-3 mb-2">푸시 알림</h2>
             {me.pushbulletEnabled
-            ?   <Button color="warning" onClick={this.pushbulletDisconnect.bind(this)}>Pushbulletとの接続を解除する</Button>
+            ?   <Button color="warning" onClick={this.pushbulletDisconnect.bind(this)}>Pushbullet과 연결 해제</Button>
             :   <Button href="/api/web/accounts/pushbullet/redirect" color="success">
-                    Pushbulletと接続して新しい質問が来た際に通知を受け取る
+                    Pushbullet과 연결해서 새로운 질문이 들어왔을 때 알림 받기
                 </Button>
             }
-            <h2 className="mt-3 mb-2">やばいゾーン</h2>
-            <Button color="danger" onClick={this.allDeleteQuestions.bind(this)}>自分宛ての質問を(回答済みのものも含めて)すべて削除</Button>
+            <h2 className="mt-3 mb-2">짱 위험한 곳</h2>
+            <Button color="danger" onClick={this.allDeleteQuestions.bind(this)}>받았던 질문들을(이미 답변한거까지 포함해서!) 싹 다 날려버리기!!!</Button>
         </div>
     }
 

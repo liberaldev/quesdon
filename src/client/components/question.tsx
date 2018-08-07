@@ -42,9 +42,9 @@ export class Question extends React.Component<Props, State> {
             </CardBody>
             { this.state.nsfwGuard && <div className="nsfw-guard" onClick={this.nsfwGuardClick.bind(this)}>
                 <div>
-                    <div>閲覧注意</div>
-                    { !this.props.hideAnswerUser && <div>回答者: @{this.props.user.acctDisplay}</div>}
-                    <div>クリック/タップで表示</div>
+                    <div>열람 주의</div>
+                    { !this.props.hideAnswerUser && <div>답변자: @{this.props.user.acctDisplay}</div>}
+                    <div>눌러서 표시</div>
                 </div>
             </div> }
         </Card>
@@ -53,7 +53,7 @@ export class Question extends React.Component<Props, State> {
     renderAnswerUser() {
         if (this.props.hideAnswerUser) return null
         return <span className="mr-2">
-            回答者:&nbsp;
+            답변자:&nbsp;
             <UserLink {...this.props.user}/>
         </span>
     }
@@ -61,7 +61,7 @@ export class Question extends React.Component<Props, State> {
     renderQuestionUser() {
         if (!this.props.questionUser) return null
         return <span className="mr-2">
-            質問者:&nbsp;
+            질문자:&nbsp;
             <UserLink {...this.props.questionUser}/>
         </span>
     }
@@ -73,18 +73,18 @@ export class Question extends React.Component<Props, State> {
     renderAnswerForm() {
         return <form action="javascript://" onSubmit={this.onSubmit.bind(this)}>
             <FormGroup>
-                <Input type="textarea" name="answer" placeholder="回答内容を入力" onInput={this.onInput.bind(this)}/>
+                <Input type="textarea" name="answer" placeholder="답변 내용을 입력해 주세요:" onInput={this.onInput.bind(this)}/>
             </FormGroup>
-            <Button type="submit" color="primary" disabled={!this.state.isNotEmpty}>回答</Button>
-            <span className="ml-3">公開範囲: </span>
+            <Button type="submit" color="primary" disabled={!this.state.isNotEmpty}>답변</Button>
+            <span className="ml-3">공개 범위: </span>
             <Input type="select" name="visibility" style={{width: "inherit", display: "inline-block"}}>
-                <option value="public">公開</option>
-                <option value="unlisted">未収録</option>
-                <option value="private">非公開</option>
-                <option value="no">投稿しない</option>
+                <option value="public">공개</option>
+                <option value="unlisted">타임라인에 비표시</option>
+                <option value="private">비공개</option>
+                <option value="no">안 올릴 건데요!</option>
             </Input>
             <Checkbox name="isNSFW" value="true" className="ml-2">NSFW</Checkbox>
-            <Button type="button" color="danger" style={{float: "right"}} onClick={this.onDelete.bind(this)}>削除</Button>
+            <Button type="button" color="danger" style={{float: "right"}} onClick={this.onDelete.bind(this)}>삭제</Button>
         </form>
     }
 
@@ -98,17 +98,17 @@ export class Question extends React.Component<Props, State> {
             method: "POST",
             body: form,
         }).then((r) => r.json()).then((r) => {
-            alert("答えました")
+            alert("답변했어요!")
             location.reload()
         })
     }
 
     onDelete(e: any) {
-        if (!confirm("質問を削除します。\n削除した質問は二度と元に戻せません。\n本当に質問を削除しますか?")) return
+        if (!confirm("질문을 삭제하려고요?\n삭제한 질문은 다시 되돌릴 수 없어요.\n정말로 삭제하실 건가요?")) return
         apiFetch("/api/web/questions/" + this.props._id + "/delete", {
             method: "POST",
         }).then((r) => r.json()).then((r) => {
-            alert("削除しました")
+            alert("삭제했어요.")
             location.reload()
         })
     }

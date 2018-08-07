@@ -28,13 +28,13 @@ export class PageLatest extends React.Component<{}, State> {
             questions,
         } = this.state
         return <div>
-            <Title>最近の回答 - Quesdon</Title>
-            <h2>最近の回答 <Button color="white" onClick={this.load.bind(this)} disabled={loading}>再読み込み</Button></h2>
+            <Title>최근 답변 - Quesdon</Title>
+            <h2>최근 올라온 답변들 <Button color="white" onClick={this.load.bind(this)} disabled={loading}>새로고침</Button></h2>
             { loading
                 ? <Loading/>
                 : loadFailed
                     ? <span>
-                        読み込みに失敗しました。上の再読み込みボタンを押して再度お試しください。
+                        불러오기에 실패했어요. 위쪽 새로고침 버튼을 눌러서 다시 시도해 주세요.
                         ({loadFailed < 0 ? loadFailed : "HTTP-" + loadFailed})
                     </span>
                     : questions.map((question) => <Question {...question} key={question._id}/>)

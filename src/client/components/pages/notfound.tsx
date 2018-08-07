@@ -7,8 +7,8 @@ export class PageNotFound extends React.Component {
         return <div>
             <Title>Not Found</Title>
             <h1>Not Found</h1>
-            <p>指定されたページが見つかりませんでした。</p>
-            <p><Link to="/">トップに戻る</Link></p>
+            <p>페이지를 찾을 수 없어요.</p>
+            <p><Link to="/">메인으로 돌아가기</Link></p>
         </div>
     }
 }

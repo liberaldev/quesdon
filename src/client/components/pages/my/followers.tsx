@@ -23,14 +23,14 @@ export class PageMyFollowers extends React.Component<{}, State> {
 
     render() {
         return <div>
-            <Title>Quesdonを利用しているフォロワー一覧 - マイページ</Title>
-            <h1>Quesdonを利用しているフォロワー一覧</h1>
+            <Title>Quesdon@Planet을 사용 중인 팔로워 목록 - 마이페이지</Title>
+            <h1>Quesdon@Planet을 사용 중인 팔로워 목록</h1>
             <ul>
                 {this.state.accounts.map((user) => <li><UserLink {...user} /></li>)}
             </ul>
             <Button disabled={this.state.loading || !this.state.maxId}
                 onClick={this.readMore.bind(this)}>
-                {this.state.loading ? "読み込み中" : this.state.maxId ? "もっと" : "これで全部です"}
+                {this.state.loading ? "불러오는 중" : this.state.maxId ? "더 보기" : "이게 끝이에요 0_0"}
             </Button>
         </div>
     }
@@ -41,7 +41,7 @@ export class PageMyFollowers extends React.Component<{}, State> {
 
     async readMore() {
         function errorMsg(code: number | string) {
-            return "読み込みに失敗しました。再度お試しください (" + code + ")"
+            return "불러오기에 실패했어요. 다시 시도해 주세요. (" + code + ")"
         }
         this.setState({loading: true})
         const param = this.state.maxId ? "?max_id=" + this.state.maxId : ""

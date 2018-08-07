@@ -3,8 +3,7 @@ services:
   db:
     image: 'mongo:3.6'
   app:
-    build:
-      context: .
+    image: 'registry.gitlab.com/byulmaru/quesdon'
     ports:
       - '17323:17323'
     links:

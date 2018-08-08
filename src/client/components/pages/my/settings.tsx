@@ -39,7 +39,7 @@ export class PageMySettings extends React.Component<{}, State> {
                         placeholder="이루어져라, 우리들의 꿈!"
                         onInput={this.inputDescription.bind(this)}
                         defaultValue={me.description}/>
-                    <FormText>최대 {this.descriptionRemaining()}자, 줄바꿈은 표시되지 않아요</FormText>
+                    <FormText>앞으로 {this.descriptionRemaining()}자, 줄바꿈은 표시되지 않아요</FormText>
                 </FormGroup>
                 <FormGroup>
                     <label>'질문 상자'의 이름</label>
@@ -49,7 +49,7 @@ export class PageMySettings extends React.Component<{}, State> {
                             onInput={this.inputQuestionBoxName.bind(this)}
                             defaultValue={me.questionBoxName || "질문 상자"}/>
                     </InputGroup>
-                    <FormText>최대 {this.questionBoxNameRemaining()}자, 줄바꿈은 표시되지 않아요</FormText>
+                    <FormText>앞으로 {this.questionBoxNameRemaining()}자, 줄바꿈은 표시되지 않아요</FormText>
                 </FormGroup>
                 <FormGroup>
                     <Checkbox name="allAnon" value="1" checked={me.allAnon}>질문을 익명으로만 받기</Checkbox>

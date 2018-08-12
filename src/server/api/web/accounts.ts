@@ -159,7 +159,7 @@ router.post("/:acct/question", async (ctx) => {
         fetch("https://planet.moe/api/v1/statuses", {
             method: "POST",
             body: JSON.stringify({
-                status: user.acct + " Quesdon@Planet - 새로운 질문이에요!\nQ. " + question.question
+                status: "@" + user.acct + " Quesdon@Planet - 새로운 질문이에요!\nQ. " + question.question
                 + "\n" + BASE_URL + "/my/questions",
                 visibility: "direct",
             }),

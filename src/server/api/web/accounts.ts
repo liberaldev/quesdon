@@ -5,7 +5,7 @@ import fetch from "node-fetch"
 import * as parseLinkHeader from "parse-link-header"
 import { Link, Links } from "parse-link-header"
 import { QUESTION_TEXT_MAX_LENGTH } from "../../../common/const"
-import { BASE_URL, PUSHBULLET_CLIENT_ID, PUSHBULLET_CLIENT_SECRET } from "../../config"
+import { BASE_URL, NOTICE_ACCESS_TOKEN, PUSHBULLET_CLIENT_ID, PUSHBULLET_CLIENT_SECRET } from "../../config"
 import { Question, User } from "../../db/index"
 
 const router = new Router()
@@ -151,6 +151,20 @@ router.post("/:acct/question", async (ctx) => {
             }),
             headers: {
                 "Access-Token": user.pushbulletAccessToken,
+                "Content-Type": "application/json",
+            },
+        })
+    }
+    if (NOTICE_ACCESS_TOKEN) {
+        fetch("https://planet.moe/api/v1/statuses", {
+            method: "POST",
+            body: JSON.stringify({
+                status: user.acct + " Quesdon@Planet - 새로운 질문이에요!\nQ. " + question.question
+                + "\n" + BASE_URL + "/my/questions",
+                visibility: "direct",
+            }),
+            headers: {
+                "Authorization": "Bearer " + NOTICE_ACCESS_TOKEN,
                 "Content-Type": "application/json",
             },
         })

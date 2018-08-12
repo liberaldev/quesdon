@@ -17,3 +17,5 @@ export var GIT_COMMIT = execSync("git rev-parse HEAD").toString().trim()
 
 export const PUSHBULLET_CLIENT_ID = process.env.PUSHBULLET_CLIENT_ID
 export const PUSHBULLET_CLIENT_SECRET = process.env.PUSHBULLET_CLIENT_SECRET
+
+export const NOTICE_ACCESS_TOKEN = process.env.NOTICE_ACCESS_TOKEN

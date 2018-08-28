@@ -99,7 +99,7 @@ export class PageMySettings extends React.Component<{}, State> {
 
     async pushbulletDisconnect() {
         function errorMsg(code: number | string) {
-            return "通信に失敗しました。再度お試しください (" + code + ")"
+            return "통신에 실패했어요. 다시 시도해 주세요. (" + code + ")"
         }
         const req = await apiFetch("/api/web/accounts/pushbullet/disconnect", {
             method: "POST",
@@ -117,19 +117,19 @@ export class PageMySettings extends React.Component<{}, State> {
         })
         if (!res) return
 
-        alert("切断しました。")
+        alert("연결을 해제했어요.")
         location.reload()
     }
 
     async allDeleteQuestions() {
         function errorMsg(code: number | string) {
-            return "通信に失敗しました。再度お試しください (" + code + ")"
+            return "통신에 실패했어요. 다시 시도해 주세요. (" + code + ")"
         }
         if (!me) return
         const rand = Math.floor(Math.random() * 9) + 1
-        if (prompt(`あなた(@${me.acctDisplay})あてに来た質問を「回答済みのものも含めて全て」削除します。
+        if (prompt(`사용자님(@${me.acctDisplay})의 들어온 질문들을 (답변한 것까지 포함해서!) 몽땅 삭제할 거에요.
 
-確認のために「${rand}」を下に入力してください(数字だけ入力してください)`, "") !== rand.toString()) return
+확인을 위해 (${rand})을 아래쪽 칸에 입력해주세요.(숫자만 나와요)`, "") !== rand.toString()) return
         const req = await apiFetch("/api/web/questions/all_delete", {
             method: "POST",
         }).catch((e) => {
@@ -147,13 +147,13 @@ export class PageMySettings extends React.Component<{}, State> {
         })
         if (!res) return
 
-        alert("削除しました。")
+        alert("모두 삭제했어요.")
         location.reload()
     }
 
     async onSubmit(e: any) {
         function errorMsg(code: number | string) {
-            return "通信に失敗しました。再度お試しください (" + code + ")"
+            return "통신에 실패했어요. 다시 시도해 주세요. (" + code + ")"
         }
         this.setState({saving: true})
 
@@ -184,7 +184,7 @@ export class PageMySettings extends React.Component<{}, State> {
         })
         if (!res) return
 
-        alert("更新しました!")
+        alert("저장했어요!")
         location.reload()
     }
 

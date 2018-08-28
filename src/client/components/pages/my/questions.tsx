@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import { Button } from "reactstrap"
 import { APIQuestion, APIUser } from "../../../../api-interfaces"
 import { apiFetch } from "../../../api-fetch"
+import josa from "../../../josa"
 import { Title } from "../../common/title"
 import { Loading } from "../../loading"
 import { Question } from "../../question"
@@ -86,7 +87,8 @@ export class PageMyQuestions extends React.Component<{}, State> {
     }
     getShareUrl() {
         const user = (window as any).USER as APIUser
-        const text = `저의 ${user.questionBoxName || "질문 상자"}에요! #quesdon ${location.origin}/@${user.acct}`
+        const qbox = user.questionBoxName || "질문 상자"
+        const text = `저의 ${josa(qbox, "이", "")}에요! #quesdon ${location.origin}/@${user.acct}`
         return `https://${user.hostName}/${user.isTwitter ? "intent/tweet" : "share"}?text=${encodeURIComponent(text)}`
     }
 }

@@ -88,7 +88,7 @@ export class PageMyQuestions extends React.Component<{}, State> {
     getShareUrl() {
         const user = (window as any).USER as APIUser
         const qbox = user.questionBoxName || "질문 상자"
-        const text = `저의 ${josa(qbox, "이", "")}에요! #quesdon ${location.origin}/@${user.acct}`
+        const text = `저의 ${josa(qbox, "이에요", "예요")}! #quesdon ${location.origin}/@${user.acct}`
         return `https://${user.hostName}/${user.isTwitter ? "intent/tweet" : "share"}?text=${encodeURIComponent(text)}`
     }
 }

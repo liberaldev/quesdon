@@ -12,7 +12,9 @@
     "dev:node": "sleep 1; node-dev dist/server/index.js",
     "dev:tsc": "tsc -w --preserveWatchOutput",
     "dev:webpack-dev-server": "webpack-dev-server",
-    "start": "node dist/server/index.js"
+    "start": "node dist/server/index.js",
+    "lint": "eslint \"./src/**/*.ts\" \"./src/**/*.tsx\"",
+    "lint-autofix": "eslint \"./src/**/*.ts\" \"./src/**/*.tsx\" --fix"
   },
   "author": "rinsuki",
   "license": "AGPL-3.0+",

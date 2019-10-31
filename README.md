@@ -1,6 +1,6 @@
 # quesdon
 
-ザ・インタビューズとかaskfmとかそういうののMastodon版
+Mastodon/Misskey를 위한 ask.fm 같은거
 
 LICENSE: [AGPL 3.0](LICENSE)
 
@@ -14,20 +14,20 @@ yarn build
 MONGODB_URL=mongodb://localhost/quesdon BACK_PORT=3000 yarn start
 ```
 
-## 開発のしかた
+## 개발
 
-### 開発環境を立てる
+### 개발 환경 구축
 
-`cp .env.development .env`したあと`yarn dev`とするといろいろwatchしながら動くやつが立ち上がるのであとは <http://localhost:8080> を開くだけ
+`cp .env.development .env`한 뒤 `yarn dev`로 빌드 후 <http://localhost:8080> 로 접속
 
-### ファイル構造
+### 디렉터리 구조
 
-言わなくても見ればわかると思いますが念のため
+굳이 안 적어놔도 보면 알겠지만 혹시 모르니까
 
-- `src/`: ソース一式
-    - `server/`: サーバーサイドのソース
-        - `api/`: APIまわりが入ってるやつ
-        - `db/`: データベースのModel
-        - `utils/`: あちこちで使うやつ
-    - `client/`: クライアントのソース
-- `views/`: サーバーサイドが見るテンプレート(pugで書かれている)
+- `src/`: 소스
+    - `server/`: 서버 사이드 소스
+        - `api/`: API 엔드포인트
+        - `db/`: 데이터베이스 모델
+        - `utils/`: 잡다한 것들
+    - `client/`: 클라이언트 소스
+- `views/`: 서버 사이드 템플릿 (pug 템플릿 엔진 사용)

@@ -64,7 +64,9 @@
     "sourceMap": true,
   },
   "include": [
+    "src/*.ts",
     "src/server/**/*.ts",
-    "src/common/**/*.ts"
+    "src/common/**/*.ts",
+    "src/client/**/*.tsx"
   ]
 }

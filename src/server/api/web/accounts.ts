@@ -22,7 +22,7 @@ router.get('/verify_credentials', async (ctx: Koa.ParameterizedContext): Promise
 	ctx.body = user;
 });
 
-router.get('/followers', async (ctx: Koa.ParameterizedContext): Promise<never|void> => 
+router.get('/followers', async (ctx: Koa.ParameterizedContext): Promise<never|void|{}> => 
 {
 	if (null === /^\d+$/.exec(ctx.query.max_id || '0')) 
 		return ctx.throw('max_id is num only', 400);
@@ -35,8 +35,7 @@ router.get('/followers', async (ctx: Koa.ParameterizedContext): Promise<never|vo
 
 	// twitter
 	if (user.hostName === 'twitter.com') 
-		return;
-	//	return { max_id: undefined, accounts: [] };
+		return ctx.body = { max_id: undefined, accounts: [] };
 
 	// TODO: add logic for misskey
 	// mastodon

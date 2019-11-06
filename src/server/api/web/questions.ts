@@ -33,7 +33,7 @@ router.get('/count', async (ctx: Koa.ParameterizedContext): Promise<never|void> 
 
 	const count = await Question.find(
 		{
-			user: mongoose.Types.ObjectId(ctx.session!.user),
+			user: mongoose.Types.ObjectId(ctx.session.user),
 			answeredAt: null,
 			isDeleted: {$ne: true}
 		}).count();
@@ -65,7 +65,7 @@ router.post('/:id/answer', async (ctx: Koa.ParameterizedContext): Promise<never|
 	if (question.user._id != ctx.session.user) // eslint-disable-line eqeqeq
 		return ctx.throw('not found', 404); 
 	if (question.answeredAt) 
-		return ctx.throw('alread answered', 400);
+		return ctx.throw('already answered', 400);
 
 	question.answer = ctx.request.body.fields.answer as string;
 	if (question.answer.length < 1) 

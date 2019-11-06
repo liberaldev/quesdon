@@ -68,5 +68,9 @@
     "src/server/**/*.ts",
     "src/common/**/*.ts",
     "src/client/**/*.tsx"
+  ],
+  "exclude": [
+    "src/quesdon-client/**/*.ts",
+    "src/quesdon-client/**/*.tsx"
   ]
 }

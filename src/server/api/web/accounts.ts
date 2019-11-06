@@ -73,10 +73,10 @@ router.post('/update', async (ctx: Koa.ParameterizedContext): Promise<never|void
 	if (!user) 
 		return ctx.throw('not found', 404);
 
-	user.description = ctx.request.body.fields.description;
-	user.questionBoxName = ctx.request.body.fields.questionBoxName;
-	user.allAnon = !!ctx.request.body.fields.allAnon;
-	user.stopNewQuestion = !!ctx.request.body.fields.stopNewQuestion;
+	user.description = ctx.request.body.description;
+	user.questionBoxName = ctx.request.body.questionBoxName;
+	user.allAnon = !!ctx.request.body.allAnon;
+	user.stopNewQuestion = !!ctx.request.body.stopNewQuestion;
 	await user.save();
 	ctx.body = {status: 'ok'}; 
 });
@@ -162,7 +162,7 @@ router.get('/:acct', async (ctx): Promise<never|void> =>
 
 router.post('/:acct/question', async (ctx: Koa.ParameterizedContext): Promise<never|void> => 
 {
-	const questionString = ctx.request.body.fields.question;
+	const questionString = ctx.request.body.question;
 
 	if (questionString.length < 1) 
 		return ctx.throw('please input question', 400);
@@ -178,7 +178,7 @@ router.post('/:acct/question', async (ctx: Koa.ParameterizedContext): Promise<ne
 	const question = new Question();
 	question.question = questionString;
 	question.user = user;
-	if (ctx.request.body.fields.noAnon) 
+	if (ctx.request.body.noAnon) 
 	{
 		if (user.allAnon) 
 			return ctx.throw('all anon', 400);

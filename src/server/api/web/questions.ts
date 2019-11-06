@@ -67,19 +67,19 @@ router.post('/:id/answer', async (ctx: Koa.ParameterizedContext): Promise<never|
 	if (question.answeredAt) 
 		return ctx.throw('already answered', 400);
 
-	question.answer = ctx.request.body.fields.answer as string;
+	question.answer = ctx.request.body.answer as string;
 	if (question.answer.length < 1) 
 		return ctx.throw('please input answer', 400);
 
 	question.answeredAt = new Date();
-	if (ctx.request.body.fields.isNSFW) 
+	if (ctx.request.body.isNSFW) 
 		question.isNSFW = true;
 	await question.save();
 
 	ctx.body = { status: 'ok' };
 
 	const user = await User.findById(ctx.session.user);
-	if (!['public', 'unlisted', 'private'].includes(ctx.request.body.fields.visibility)) 
+	if (!['public', 'unlisted', 'private'].includes(ctx.request.body.visibility)) 
 		return;
 	if (!user) 
 		return;
@@ -96,7 +96,7 @@ router.post('/:id/answer', async (ctx: Koa.ParameterizedContext): Promise<never|
 				spoiler_text: `Q. ${question.question} #quesdon`,
 				status: `A. ${question.answer.length > 200 ? `${question.answer.substring(0, 200)}...` : question.answer}
 					#quesdon ${answerUrl}`,
-				visibility: ctx.request.body.fields.visibility
+				visibility: ctx.request.body.visibility
 			};
 		if (question.questionUser) 
 		{

@@ -14,8 +14,7 @@ import { User } from './db/index';
 const app = new Koa();
 
 app.keys = [SECRET_KEY];
-
-new Pug( { viewPath: path.join(__dirname, '../../views') } ).use(app);
+const pug = new Pug( { viewPath: path.resolve(__dirname, '../../views'), app: app } );
 app.use(koaBody( { multipart: true } ));
 app.use(session({}, app));
 
@@ -36,7 +35,7 @@ router.get('/*', async (ctx: Koa.ParameterizedContext) =>
 	}
 	if (!ctx.session.csrfToken)
 		ctx.session.csrfToken = rndstr();
-	ctx.render('index.pug', 
+	return ctx.render('index', 
 		{
 			GIT_COMMIT,
 			user,
@@ -45,4 +44,4 @@ router.get('/*', async (ctx: Koa.ParameterizedContext) =>
 });
 
 app.use(router.routes());
-app.listen(PORT, () => console.log('listen for http://localhost:' + PORT) ); // eslint-disable-line no-console
+app.listen(PORT, () => console.log('listening for http://localhost:' + PORT) ); // eslint-disable-line no-console

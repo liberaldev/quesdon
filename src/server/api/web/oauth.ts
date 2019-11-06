@@ -13,7 +13,7 @@ const router = new Router();
 
 router.post('/get_url', async (ctx: Koa.ParameterizedContext): Promise<never|void> => 
 {
-	const hostName = ctx.request.body.fields.instance.replace(/.*@/, '').toLowerCase();
+	const hostName = ctx.request.body.instance.replace(/.*@/, '').toLowerCase();
 	if (hostName.includes('/')) 
 		return ctx.throw(400, 'not use slash in hostname');
 

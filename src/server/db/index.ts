@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 import { MONGODB_URL } from '../config';
 
 mongoose.connect(MONGODB_URL).catch((e) => 

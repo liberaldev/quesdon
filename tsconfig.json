@@ -56,7 +56,7 @@
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noUnusedLocals": false,
-    "noUnusedParameters": true,
+    "noUnusedParameters": false,
     "strictPropertyInitialization": true,
     "strictNullChecks": true,
     "removeComments": true,

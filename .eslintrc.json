@@ -32,6 +32,6 @@
 		"require-atomic-updates": "off",
 		"@typescript-eslint/no-explicit-any": "error",
 		"@typescript-eslint/camelcase": "off",
-		"@typescript-eslint/interface-name-prefix": ["error", { "prefixWithI": "always" }]
+		"@typescript-eslint/interface-name-prefix": "off"
 	}
 }

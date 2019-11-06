@@ -29,7 +29,9 @@
 		"comma-dangle": ["warn", "never"],
 		"brace-style": ["error", "allman", { "allowSingleLine": true }],
 		"eqeqeq": ["error", "always"],
+		"require-atomic-updates": "off",
 		"@typescript-eslint/no-explicit-any": "error",
-		"@typescript-eslint/camelcase": "off"
+		"@typescript-eslint/camelcase": "off",
+		"@typescript-eslint/interface-name-prefix": ["error", { "prefixWithI": "always" }]
 	}
 }

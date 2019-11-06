@@ -3,7 +3,7 @@ import { MONGODB_URL } from '../config';
 
 mongoose.connect(MONGODB_URL).catch((e) => 
 {
-	console.error('MongoDB Error: ' + e.message);
+	console.error('MongoDB Error: ' + e.message); // eslint-disable-line no-console
 	process.exit(1);
 });
 

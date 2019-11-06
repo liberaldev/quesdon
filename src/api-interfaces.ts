@@ -1,3 +1,5 @@
+/* eslint @typescript-eslint/interface-name-prefix: 0 */
+
 export interface APIQuestion
 {
 	_id: string;

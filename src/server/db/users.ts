@@ -1,27 +1,26 @@
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 import setTransformer from '../utils/setTransformer';
 import { IMastodonApp } from './';
 
-const schema = new mongoose.Schema({
-	acct: {type: String, required: true},
-	acctLower: {type: String, required: true, unique: true},
-	app: {type: mongoose.Schema.Types.ObjectId, ref: 'mastodon_apps'},
-	name: {type: String, required: true},
-	avatarUrl: {type: String, required: true},
-	accessToken: {type: String, required: true},
-	url: {type: String},
-	description: {type: String, default: ''},
-	questionBoxName: {type: String, default: '질문 상자'},
-	pushbulletAccessToken: {type: String},
-	allAnon: {type: Boolean, default: false},
-	upstreamId: {type: String},
-	hostName: {type: String},
-	stopNewQuestion: {type: Boolean}
-}, {
-	timestamps: true
-});
+const schema = new mongoose.Schema(
+	{
+		acct: { type: String, required: true },
+		acctLower: { type: String, required: true, unique: true },
+		app: { type: mongoose.Schema.Types.ObjectId, ref: 'mastodon_apps' },
+		name: { type: String, required: true },
+		avatarUrl: { type: String, required: true },
+		accessToken: { type: String, required: true },
+		url: { type: String },
+		description: { type: String, default: '' },
+		questionBoxName: { type: String, default: '질문 상자' },
+		pushbulletAccessToken: { type: String },
+		allAnon: { type: Boolean, default: false },
+		upstreamId: { type: String },
+		hostName: { type: String },
+		stopNewQuestion: { type: Boolean }
+	}, { timestamps: true });
 
-setTransformer(schema, (doc: IUser, ret: any) => 
+setTransformer(schema, (doc: IUser, ret: any) => // eslint-disable-line @typescript-eslint/no-explicit-any
 {
 	ret.hostName = ret.acctLower.split('@').reverse()[0];
 	delete ret.app;
@@ -52,4 +51,4 @@ export interface IUser extends mongoose.Document {
     stopNewQuestion: boolean | null;
 }
 
-export default mongoose.model('users', schema);
+export default mongoose.model<IUser>('users', schema);

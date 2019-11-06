@@ -1,23 +1,22 @@
 import * as mongoose from 'mongoose';
 import { IUser } from './index';
-// tslint:disable-next-line:no-var-requires
-const autopopulate = require('mongoose-autopopulate'); // @types/がないのでしかたない
+import autopopulate from 'mongoose-autopopulate';
 
-const schema = new mongoose.Schema({
-	user: {type: mongoose.Schema.Types.ObjectId, required: true, ref: 'users', autopopulate: true},
-	question: {type: String, required: true},
-	answer: String,
-	answeredAt: Date,
-	isDeleted: {type: Boolean, default: false},
-	likesCount: {type: Number, default: 0},
-	isNSFW: {type: Boolean, default: false},
-	questionUser: {type: mongoose.Schema.Types.ObjectId, ref: 'users', autopopulate: true}
-}, {
-	timestamps: true
-});
+const schema = new mongoose.Schema(
+	{
+		user: {type: mongoose.Schema.Types.ObjectId, required: true, ref: 'users', autopopulate: true},
+		question: {type: String, required: true},
+		answer: String,
+		answeredAt: Date,
+		isDeleted: {type: Boolean, default: false},
+		likesCount: {type: Number, default: 0},
+		isNSFW: {type: Boolean, default: false},
+		questionUser: {type: mongoose.Schema.Types.ObjectId, ref: 'users', autopopulate: true}
+	}, { timestamps: true });
 schema.plugin(autopopulate);
 
-export interface IQuestion extends mongoose.Document {
+export interface IQuestion extends mongoose.Document 
+{
     user: IUser;
     question: string;
     answer: string | null;
@@ -28,4 +27,4 @@ export interface IQuestion extends mongoose.Document {
     questionUser: IUser;
 }
 
-export default mongoose.model('questions', schema);
+export default mongoose.model<IQuestion>('questions', schema);

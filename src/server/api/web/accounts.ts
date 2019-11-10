@@ -69,7 +69,6 @@ router.get('/followers', async (ctx: Koa.ParameterizedContext): Promise<never|vo
 				})).then(r => r.json());
 		const followers = followersRaw
 			.map(follower => `${follower.follower?.username}@${follower.follower?.host ?? user.acct.split('@')[1]}`.toLowerCase());
-		console.log(followers);
 		const followersObject = await User.find({acctLower: {$in: followers}});
 		const max_id = (followersRaw[followersRaw.length - 1] ?? { id: '' }).id;
 		return ctx.body = 

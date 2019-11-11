@@ -19,6 +19,7 @@
   "author": "rinsuki",
   "license": "AGPL-3.0+",
   "devDependencies": {
+    "@babel/core": "^7.7.2",
     "@types/common-tags": "^1.8.0",
     "@types/dotenv": "^8.2.0",
     "@types/koa": "^2.0.51",
@@ -60,15 +61,14 @@
     "react-router-dom": "^5.1.2",
     "reactstrap": "^8.1.1",
     "style-loader": "^1.0.0",
-    "terser-webpack-plugin": "^2.2.1",
     "ts-loader": "^6.2.1",
     "typescript": "^3.7.2",
+    "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.9.0"
   },
   "dependencies": {
-    "@babel/core": "^7.7.2",
     "common-tags": "^1.8.0",
     "dotenv": "^8.2.0",
     "koa": "^2.11.0",

@@ -110,6 +110,30 @@ router.post('/:id/answer', async (ctx: Koa.ParameterizedContext): Promise<void|n
 	const instanceUrl = 'https://' + user.acct.split('@')[1];
 	const instanceType = await detectInstance(instanceUrl);
 
+	const status = 
+		{
+			title: `Q. ${question.question} #quesdon`,
+			text: stripIndents`
+			A. ${question.answer.length > answerCharMax ? `${question.answer.substring(0, answerCharMax)}...` : question.answer}
+			#quesdon ${answerUrl}`
+		};
+	if (question.questionUser)
+	{
+		let questionUserAcct = `@${question.questionUser.acct}`;
+		if (question.questionUser.hostName === 'twitter.com')
+			questionUserAcct = `https://twitter.com/${question.questionUser.acct.replace(/:.+/, '')}`;
+		status.text = stripIndents`
+		질문자: ${questionUserAcct}
+		${status.text}`;
+	}
+	if (question.isNSFW)
+	{
+		status.text = stripIndents`
+		Q. ${question.question}
+		${status.text}`;
+		status.title = '⚠ 이 질문은 답변자가 NSFW하다고 했어요. #quesdon';
+	}
+
 	if (instanceType === 'misskey')
 	{
 		let visibility;
@@ -125,24 +149,9 @@ router.post('/:id/answer', async (ctx: Koa.ParameterizedContext): Promise<void|n
 		{
 			i: user.accessToken,
 			visibility: visibility,
-			cw: `Q. ${question.question} #quesdon`,
-			text: stripIndents`A. ${question.answer.length > 200 ? `${question.answer.substring(0, 200)}...` : question.answer}
-			#quesdon ${answerUrl}`
+			cw: status.title,
+			text: status.text
 		};
-		if (question.questionUser)
-		{
-			let questionUserAcct = `@${question.questionUser.acct}`;
-			if (question.questionUser.hostName === 'twitter.com') 
-				questionUserAcct = `https://twitter.com/${question.questionUser.acct.replace(/:.+/, '')}`;
-			body.text = stripIndents`질문자: ${questionUserAcct}
-				${body.text}`;
-		}
-		if (question.isNSFW) 
-		{
-			body.text = stripIndents`Q. ${question.question}
-			${body.text}`;
-			body.cw = '⚠ 이 질문은 답변자가 NSFW하다고 했어요. #quesdon';
-		}
 
 		await fetch(`${instanceUrl}/api/notes/create`,
 			{
@@ -156,25 +165,11 @@ router.post('/:id/answer', async (ctx: Koa.ParameterizedContext): Promise<void|n
 	// Mastodon
 	const body = 
 		{
-			spoiler_text: `Q. ${question.question} #quesdon`,
-			status: stripIndents`A. ${question.answer.length > 200 ? `${question.answer.substring(0, 200)}...` : question.answer}
-			#quesdon ${answerUrl}`,
+			spoiler_text: status.title,
+			status: status.text,
 			visibility: ctx.request.body.visibility
 		};
-	if (question.questionUser) 
-	{
-		let questionUserAcct = `@${question.questionUser.acct}`;
-		if (question.questionUser.hostName === 'twitter.com') 
-			questionUserAcct = `https://twitter.com/${question.questionUser.acct.replace(/:.+/, '')}`;
-		body.status = stripIndents`질문자: ${questionUserAcct}
-		${body.status}`;
-	}
-	if (question.isNSFW) 
-	{
-		body.status = stripIndents`Q. ${question.question}
-		${body.status}`;
-		body.spoiler_text = '⚠ 이 질문은 답변자가 NSFW하다고 했어요. #quesdon';
-	}
+	
 	await fetch(instanceUrl + '/api/v1/statuses', 
 		{
 			method: 'POST',

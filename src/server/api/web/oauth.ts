@@ -279,13 +279,12 @@ router.get('/redirect', async (ctx: Koa.ParameterizedContext) =>
 
 	const acct = profile.acct;
 	let user;
-	if (profile.hostName !== 'twitter.com') 
-	{ 
-		// Mastodon and misskey
+	
+	if (profile.hostName !== 'twitter.com') // Mastodon and misskey
 		user = await User.findOne({acctLower: acct.toLowerCase()});
-	}
 	else 
 		user = await User.findOne({upstreamId: profile.id, hostName: profile.hostName});
+
 	if (user === null) 
 		user = new User();
 

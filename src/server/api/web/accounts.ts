@@ -39,7 +39,6 @@ router.get('/followers', async (ctx: Koa.ParameterizedContext): Promise<never|vo
 		return ctx.body = { max_id: undefined, accounts: [] };
 
 	const instanceUrl = 'https://' + user.acct.split('@')[1];
-
 	const instanceType = await detectInstance(instanceUrl);
 
 	if (instanceType === 'misskey')
@@ -56,21 +55,20 @@ router.get('/followers', async (ctx: Koa.ParameterizedContext): Promise<never|vo
 				{
 					body: JSON.stringify( { i: user.accessToken })
 				})).then(r => r.json());
+		const body: { i: string; userId: string; limit: number; untilId?: string } = 
+			{
+				i: user.accessToken,
+				userId: myInfo.id,
+				limit: 80
+			};
+		if (ctx.query.max_id)
+			body.untilId = ctx.query.max_id;
 		const followersRaw: Following[] = await fetch(`${instanceUrl}/api/users/followers`,
-			Object.assign({}, fetchOptions,
-				{
-					body: 
-						`{
-							"i": "${user.accessToken}",
-							"userId": "${myInfo.id}",
-							"limit": 80
-							${ctx.query.max_id ? ',"untilId": "' + ctx.query.max_id + '"' : ''}							
-						}`
-				})).then(r => r.json());
+			Object.assign({}, fetchOptions, { body: body })).then(r => r.json());
 		const followers = followersRaw
 			.map(follower => `${follower.follower?.username}@${follower.follower?.host ?? user.acct.split('@')[1]}`.toLowerCase());
 		const followersObject = await User.find({acctLower: {$in: followers}});
-		const max_id = (followersRaw[followersRaw.length - 1] ?? { id: '' }).id;
+		const max_id = followersRaw[followersRaw.length - 1]?.id ?? '';
 		return ctx.body = 
 		{
 			accounts: followersObject,

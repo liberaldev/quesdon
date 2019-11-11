@@ -8,7 +8,7 @@ COPY package.json yarn.lock ./
 RUN yarn install
 
 COPY . .
-RUN NODE_ENV=production yarn build
+RUN yarn build
 
 EXPOSE 80
 

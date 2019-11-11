@@ -1,0 +1,37 @@
+{
+	"env": 
+	{
+		"browser": true,
+		"commonjs": true,
+		"es6": true,
+		"node": true
+	},
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": 
+	{
+		"ecmaVersion": 2017,
+		"project": "./tsconfig.json"
+	},
+	"plugins": ["@typescript-eslint"],
+	"extends": 
+		[ 
+			"eslint:recommended",
+			"plugin:@typescript-eslint/eslint-recommended",
+			"plugin:@typescript-eslint/recommended",
+			"plugin:@typescript-eslint/recommended-requiring-type-checking"
+		],
+	"rules": 
+	{
+		"no-console": "warn",
+		"indent": ["error", "tab"],
+		"quotes": [ "warn", "single" ],
+		"semi": ["error", "always"],
+		"comma-dangle": ["warn", "never"],
+		"brace-style": ["error", "allman", { "allowSingleLine": true }],
+		"eqeqeq": ["error", "always"],
+		"require-atomic-updates": "off",
+		"@typescript-eslint/no-explicit-any": "error",
+		"@typescript-eslint/camelcase": "off",
+		"@typescript-eslint/interface-name-prefix": "off"
+	}
+}

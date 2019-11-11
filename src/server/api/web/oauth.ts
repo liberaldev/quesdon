@@ -166,7 +166,7 @@ router.get('/redirect', async (ctx: Koa.ParameterizedContext) =>
 				hostName: app.hostName,
 				avatarUrl: res.user.avatarUrl as string,
 				accessToken: crypto.createHash('sha256').update(res.accessToken + app.clientSecret).digest('hex'),
-				url: `https://${res.user.host}/@${res.user.username}`,
+				url: `https://${app.hostName}/@${res.user.username}`,
 				acct: `${res.user.username}@${app.hostName}`
 			};
 	}

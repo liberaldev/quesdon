@@ -1,5 +1,5 @@
 const webpack = require("webpack")
-const TerserPlugin = require("terser-webpack-plugin")
+const UglifyJSPlugin = require("uglifyjs-webpack-plugin")
 const isProduction = process.env.NODE_ENV == "production"
 
 module.exports = {
@@ -38,10 +38,9 @@ module.exports = {
     },
     optimization: {
         minimizer: isProduction ? [
-            new TerserPlugin({
-                parallel: true,
-                terserOptions: {
-                    ecma: 6
+            new UglifyJSPlugin({
+                uglifyOptions: {
+                    keep_classnames: true
                 }
             })
         ]: []

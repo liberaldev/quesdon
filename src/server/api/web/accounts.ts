@@ -64,7 +64,7 @@ router.get('/followers', async (ctx: Koa.ParameterizedContext): Promise<never|vo
 		if (ctx.query.max_id)
 			body.untilId = ctx.query.max_id;
 		const followersRaw: Following[] = await fetch(`${instanceUrl}/api/users/followers`,
-			Object.assign({}, fetchOptions, { body: body })).then(r => r.json());
+			Object.assign({}, fetchOptions, { body: JSON.stringify(body) })).then(r => r.json());
 		const followers = followersRaw
 			.map(follower => `${follower.follower?.username}@${follower.follower?.host ?? user.acct.split('@')[1]}`.toLowerCase());
 		const followersObject = await User.find({acctLower: {$in: followers}});

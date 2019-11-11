@@ -8,6 +8,7 @@ import { IMastodonApp, IUser, Question, QuestionLike, User } from '../../db/inde
 import { cutText } from '../../utils/cutText';
 import { requestOAuth } from '../../utils/requestOAuth';
 import twitterClient from '../../utils/twitterClient';
+import detectInstance from '../../utils/detectInstance';
 
 const router = new Router();
 
@@ -52,7 +53,7 @@ router.get('/latest', async (ctx) =>
 	ctx.body = questions;
 });
 
-router.post('/:id/answer', async (ctx: Koa.ParameterizedContext): Promise<never|void> => 
+router.post('/:id/answer', async (ctx: Koa.ParameterizedContext): Promise<void|never> =>
 {
 	if (!ctx.session.user) 
 		return ctx.throw('please login', 403);
@@ -87,57 +88,99 @@ router.post('/:id/answer', async (ctx: Koa.ParameterizedContext): Promise<never|
 	const isTwitter = user.hostName === 'twitter.com';
 	const answerCharMax = isTwitter ? (110 - question.question.length) : 200;
 	const answerUrl = `${BASE_URL}/@${user.acct}/questions/${question.id}`;
-	if (!isTwitter) 
+	
+	if (isTwitter) 
 	{ 
-		// Mastodon
-		// TODO: misskey
-		const body = 
-			{
-				spoiler_text: `Q. ${question.question} #quesdon`,
-				status: `A. ${question.answer.length > 200 ? `${question.answer.substring(0, 200)}...` : question.answer}
-					#quesdon ${answerUrl}`,
-				visibility: ctx.request.body.visibility
-			};
-		if (question.questionUser) 
-		{
-			let questionUserAcct = `@${question.questionUser.acct}`;
-			if (question.questionUser.hostName === 'twitter.com') 
-				questionUserAcct = `https://twitter.com/${question.questionUser.acct.replace(/:.+/, '')}`;
-			body.status = stripIndents`질문자: ${questionUserAcct}
-				${body.status}`;
-		}
-		if (question.isNSFW) 
-		{
-			body.status = `Q. ${question.question}
-				${body.status}`;
-			body.spoiler_text = '⚠ 이 질문은 답변자가 NSFW하다고 했어요. #quesdon';
-		}
-		fetch('https://' + user.acct.split('@')[1] + '/api/v1/statuses', 
-			{
-				method: 'POST',
-				body: JSON.stringify(body),
-				headers: 
-				{
-					'Authorization': 'Bearer ' + user.accessToken,
-					'Content-Type': 'application/json'
-				}
-			});
-	}
-	else 
-	{
 		const strQ = cutText(question.question, 60);
 		const strA = cutText(question.answer, 120 - strQ.length);
 		const [key, secret] = user.accessToken.split(':');
 		const body = `Q. ${strQ}
 			A. ${strA}
 			#quesdon ${answerUrl}`;
-		requestOAuth(twitterClient, 
+		await requestOAuth(twitterClient, 
 			{
 				url: 'https://api.twitter.com/1.1/statuses/update.json',
 				method: 'POST',
 				data: { status: body }
 			}, { key, secret });
+		return;
 	}
+	
+	// misskey
+	const instanceUrl = 'https://' + user.acct.split('@')[1];
+	const instanceType = await detectInstance(instanceUrl);
+
+	const status = 
+		{
+			title: `Q. ${question.question} #quesdon`,
+			text: stripIndents`
+			A. ${question.answer.length > answerCharMax ? `${question.answer.substring(0, answerCharMax)}...` : question.answer}
+			#quesdon ${answerUrl}`
+		};
+	if (question.questionUser)
+	{
+		let questionUserAcct = `@${question.questionUser.acct}`;
+		if (question.questionUser.hostName === 'twitter.com')
+			questionUserAcct = `https://twitter.com/${question.questionUser.acct.replace(/:.+/, '')}`;
+		status.text = stripIndents`
+		질문자: ${questionUserAcct}
+		${status.text}`;
+	}
+	if (question.isNSFW)
+	{
+		status.text = stripIndents`
+		Q. ${question.question}
+		${status.text}`;
+		status.title = '⚠ 이 질문은 답변자가 NSFW하다고 했어요. #quesdon';
+	}
+
+	if (instanceType === 'misskey')
+	{
+		let visibility;
+		switch(ctx.request.body.visibility)
+		{
+		case 'public': visibility = 'public'; break;
+		case 'unlisted': visibility = 'home'; break;
+		case 'private': visibility = 'followers'; break;
+		default: visibility = 'home'; break;
+		}
+
+		const body = 
+		{
+			i: user.accessToken,
+			visibility: visibility,
+			cw: status.title,
+			text: status.text
+		};
+
+		await fetch(`${instanceUrl}/api/notes/create`,
+			{
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(body)
+			});
+		return;
+	}
+
+	// Mastodon
+	const body = 
+		{
+			spoiler_text: status.title,
+			status: status.text,
+			visibility: ctx.request.body.visibility
+		};
+	
+	await fetch(instanceUrl + '/api/v1/statuses', 
+		{
+			method: 'POST',
+			body: JSON.stringify(body),
+			headers: 
+			{
+				'Authorization': 'Bearer ' + user.accessToken,
+				'Content-Type': 'application/json'
+			}
+		});
+	return;
 });
 
 router.post('/:id/delete', async (ctx: Koa.ParameterizedContext): Promise<never|void> => 

@@ -2,12 +2,16 @@ import Koa from 'koa';
 import Router from 'koa-router';
 import fetch from 'node-fetch';
 import rndstr from 'rndstr';
+import crypto from 'crypto';
 import { URL } from 'url';
 import { BASE_URL } from '../../config';
 import { MastodonApp, User } from '../../db/index';
 import QueryStringUtils from '../../utils/queryString';
 import { requestOAuth } from '../../utils/requestOAuth';
 import twitterClient from '../../utils/twitterClient';
+import detectInstance from '../../utils/detectInstance';
+import { App } from '../../utils/misskey_entities/app';
+import { User as MisskeyUser } from '../../utils/misskey_entities/user';
 
 const router = new Router();
 
@@ -20,47 +24,7 @@ router.post('/get_url', async (ctx: Koa.ParameterizedContext): Promise<never|voi
 	const redirectUri = BASE_URL + '/api/web/oauth/redirect';
 	let url = '';
 
-	if (hostName !== 'twitter.com') 
-	{ 
-		// Mastodon 
-		// TODO: misskey support
-		let app = await MastodonApp.findOne( { hostName, appBaseUrl: BASE_URL, redirectUri } );
-		if (!app) 
-		{
-			const res = await fetch('https://' + hostName + '/api/v1/apps', 
-				{
-					method: 'POST',
-					body: JSON.stringify(
-						{
-							client_name: 'Quesdon',
-							redirect_uris: redirectUri,
-							scopes: 'read write',
-							website: BASE_URL
-						}),
-					headers: { 'Content-Type': 'application/json' }
-				}).then((r) => r.json());
-
-			app = new MastodonApp();
-			app.clientId = res.client_id;
-			app.clientSecret = res.client_secret;
-			app.hostName = hostName;
-			app.appBaseUrl = BASE_URL;
-			app.redirectUri = redirectUri;
-
-			await app.save();
-		}
-		ctx.session.loginState = `${rndstr()}_${app.id}`;
-		const params: {[key: string]: string} = 
-		{
-			client_id: app.clientId,
-			scope: 'read+write',
-			redirect_uri: redirectUri,
-			response_type: 'code',
-			state: ctx.session.loginState
-		};
-		url = `https://${app.hostName}/oauth/authorize?${Object.entries(params).map((v) => v.join('=')).join('&')}`;
-	}
-	else // Twitter
+	if (hostName === 'twitter.com') 
 	{ 
 		ctx.session.loginState = 'twitter';
 		const { TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET } = process.env;
@@ -80,6 +44,85 @@ router.post('/get_url', async (ctx: Koa.ParameterizedContext): Promise<never|voi
 		ctx.session.twitterOAuth = requestToken;
 		url = `https://twitter.com/oauth/authenticate?oauth_token=${requestToken.token}`;
 	}
+	else
+	{ 
+		const instanceType = await detectInstance(`https://${hostName}`);
+		if (instanceType === 'misskey')
+		{
+			let app = await MastodonApp.findOne( { hostName, appBaseUrl: BASE_URL, redirectUri } );
+			if (!app) // if it's the first time user from this instance is using quesdon
+			{
+				const res: App = await fetch(`https://${hostName}/api/app/create`,
+					{
+						method: 'POST',
+						body: JSON.stringify(
+							{
+								name: 'Quesdon',
+								description: BASE_URL,
+								permission: ['read:following', 'write:notes'],
+								callbackUrl: redirectUri
+							}),
+						headers: { 'Content-Type': 'application/json' }
+					}).then(r => r.json());
+
+				app = new MastodonApp();
+				app.clientId = res.id,
+				app.clientSecret = res.secret as string;
+				app.hostName = hostName;
+				app.appBaseUrl = BASE_URL;
+				app.redirectUri = redirectUri;
+
+				await app.save();
+			}
+			ctx.session.loginState = `misskey_${app.id}`;
+			const res = await fetch(`https://${hostName}/api/auth/session/generate`, // get authentication url from misskey instance
+				{
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify( { appSecret: app.clientSecret } )
+				}).then(r => r.json());
+			url = res.url;
+		}
+		else
+		{
+			// Mastodon 
+			let app = await MastodonApp.findOne( { hostName, appBaseUrl: BASE_URL, redirectUri } );
+			if (!app) 
+			{
+				const res = await fetch('https://' + hostName + '/api/v1/apps', 
+					{
+						method: 'POST',
+						body: JSON.stringify(
+							{
+								client_name: 'Quesdon',
+								redirect_uris: redirectUri,
+								scopes: 'read write',
+								website: BASE_URL
+							}),
+						headers: { 'Content-Type': 'application/json' }
+					}).then((r) => r.json());
+
+				app = new MastodonApp();
+				app.clientId = res.client_id;
+				app.clientSecret = res.client_secret;
+				app.hostName = hostName;
+				app.appBaseUrl = BASE_URL;
+				app.redirectUri = redirectUri;
+
+				await app.save();
+			}
+			ctx.session.loginState = `${rndstr()}_${app.id}`;
+			const params: {[key: string]: string} = 
+			{
+				client_id: app.clientId,
+				scope: 'read+write',
+				redirect_uri: redirectUri,
+				response_type: 'code',
+				state: ctx.session.loginState
+			};
+			url = `https://${app.hostName}/oauth/authorize?${Object.entries(params).map((v) => v.join('=')).join('&')}`;
+		}
+	}
 	ctx.body = { url };
 });
 
@@ -96,11 +139,40 @@ router.get('/redirect', async (ctx: Koa.ParameterizedContext) =>
 			url: string;
 			acct: string;
 		};
-
-	if (ctx.session.loginState !== 'twitter') 
+	
+	if ((ctx.session.loginState as string).startsWith('misskey'))
+	{
+		// misskey
+		const app = await MastodonApp.findById(ctx.session.loginState.split('_')[1]);
+		if (app === null)
+			return ctx.redirect('/login?error=app_notfound');
+		
+		const res: { accessToken: string; user: MisskeyUser } = await fetch(`https://${app.hostName}/api/auth/session/userkey`,
+			{
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(
+					{
+						appSecret: app.clientSecret,
+						token: ctx.query.token
+					})
+			}).then(r => r.json());
+		
+		profile = 
+			{
+				id: res.user.id,
+				name: res.user.name ?? res.user.username,
+				screenName: res.user.username,
+				hostName: app.hostName,
+				avatarUrl: res.user.avatarUrl as string,
+				accessToken: crypto.createHash('sha256').update(res.accessToken + app.clientSecret).digest('hex'),
+				url: `https://${res.user.host}/@${res.user.username}`,
+				acct: `${res.user.username}@${app.hostName}`
+			};
+	}
+	else if (ctx.session.loginState !== 'twitter') 
 	{
 		// Mastodon
-		// TODO: handle misskey
 		if (ctx.query.state !== ctx.session.loginState) 
 			return ctx.redirect('/login?error=invalid_state');
 
@@ -207,14 +279,12 @@ router.get('/redirect', async (ctx: Koa.ParameterizedContext) =>
 
 	const acct = profile.acct;
 	let user;
-	if (profile.hostName !== 'twitter.com') 
-	{ 
-		// Mastodon
-		// TODO: misskey
+	
+	if (profile.hostName !== 'twitter.com') // Mastodon and misskey
 		user = await User.findOne({acctLower: acct.toLowerCase()});
-	}
 	else 
 		user = await User.findOne({upstreamId: profile.id, hostName: profile.hostName});
+
 	if (user === null) 
 		user = new User();
 

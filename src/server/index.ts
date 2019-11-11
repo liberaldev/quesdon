@@ -14,7 +14,7 @@ import { User } from './db/index';
 const app = new Koa();
 
 app.keys = [SECRET_KEY];
-const pug = new Pug( { viewPath: path.resolve(__dirname, '../../views'), app: app } );
+new Pug( { viewPath: path.resolve(__dirname, '../../views'), app: app } );
 app.use(koaBody( { multipart: true } ));
 app.use(session({}, app));
 

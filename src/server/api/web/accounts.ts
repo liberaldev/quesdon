@@ -3,10 +3,13 @@ import Router from 'koa-router';
 import fetch from 'node-fetch';
 import parseLinkHeader, { Link, Links } from 'parse-link-header';
 import { Account } from 'megalodon';
+import { User as MisskeyUser } from '../../utils/misskey_entities/user';
+import { Following } from '../../utils/misskey_entities/following';
 import { oneLineTrim, stripIndents } from 'common-tags';
 import { QUESTION_TEXT_MAX_LENGTH } from '../../../common/const';
 import { BASE_URL, NOTICE_ACCESS_TOKEN, PUSHBULLET_CLIENT_ID, PUSHBULLET_CLIENT_SECRET } from '../../config';
 import { Question, User } from '../../db/index';
+import detectInstance from '../../utils/detectInstance';
 
 const router = new Router();
 
@@ -24,8 +27,6 @@ router.get('/verify_credentials', async (ctx: Koa.ParameterizedContext): Promise
 
 router.get('/followers', async (ctx: Koa.ParameterizedContext): Promise<never|void|{}> => 
 {
-	if (null === /^\d+$/.exec(ctx.query.max_id || '0')) 
-		return ctx.throw('max_id is num only', 400);
 	if (!ctx.session.user) 
 		return ctx.throw('please login', 403);
 
@@ -37,10 +38,46 @@ router.get('/followers', async (ctx: Koa.ParameterizedContext): Promise<never|vo
 	if (user.hostName === 'twitter.com') 
 		return ctx.body = { max_id: undefined, accounts: [] };
 
-	// TODO: add logic for misskey
-	// mastodon
 	const instanceUrl = 'https://' + user.acct.split('@')[1];
-	const myInfo = await fetch(instanceUrl + '/api/v1/accounts/verify_credentials', 
+	const instanceType = await detectInstance(instanceUrl);
+
+	if (instanceType === 'misskey')
+	{
+		// misskey
+		const fetchOptions = 
+			{
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' }
+			};
+
+		const myInfo: MisskeyUser = await fetch(`${instanceUrl}/api/i`,
+			Object.assign({}, fetchOptions,
+				{
+					body: JSON.stringify( { i: user.accessToken })
+				})).then(r => r.json());
+		const body: { i: string; userId: string; limit: number; untilId?: string } = 
+			{
+				i: user.accessToken,
+				userId: myInfo.id,
+				limit: 80
+			};
+		if (ctx.query.max_id)
+			body.untilId = ctx.query.max_id;
+		const followersRaw: Following[] = await fetch(`${instanceUrl}/api/users/followers`,
+			Object.assign({}, fetchOptions, { body: body })).then(r => r.json());
+		const followers = followersRaw
+			.map(follower => `${follower.follower?.username}@${follower.follower?.host ?? user.acct.split('@')[1]}`.toLowerCase());
+		const followersObject = await User.find({acctLower: {$in: followers}});
+		const max_id = followersRaw[followersRaw.length - 1]?.id ?? '';
+		return ctx.body = 
+		{
+			accounts: followersObject,
+			max_id
+		};	
+	}
+	
+	// mastodon
+	const myInfo = await fetch(`${instanceUrl}/api/v1/accounts/verify_credentials`, 
 		{
 			headers: { Authorization: 'Bearer ' + user.accessToken }
 		}).then((r) => r.json());
@@ -57,7 +94,7 @@ router.get('/followers', async (ctx: Koa.ParameterizedContext): Promise<never|vo
 
 	const followersObject = await User.find({acctLower: {$in: followers}});
 	const max_id = ((parseLinkHeader(followersRes.headers.get('Link') ?? '') || {} as Links).next || {} as Link).max_id;
-	ctx.body = 
+	return ctx.body = 
 		{ 
 			accounts: followersObject,
 			max_id
@@ -185,7 +222,7 @@ router.post('/:acct/question', async (ctx: Koa.ParameterizedContext): Promise<ne
 		if (!ctx.session.user) 
 			return ctx.throw('please login', 403);
 
-		const questionUser = await User.findById(ctx.sessions.user);
+		const questionUser = await User.findById(ctx.session.user);
 		if (!questionUser) 
 			return ctx.throw('not found', 404);
 

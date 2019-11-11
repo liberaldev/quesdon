@@ -1,8 +1,8 @@
-import * as Router from "koa-router"
-import webRouter from "./web"
+import Router from 'koa-router';
+import webRouter from './web';
 
-const router = new Router()
+const router = new Router();
 
-router.use("/web", webRouter.routes())
+router.use('/web', webRouter.routes());
 
-export default router
+export default router;

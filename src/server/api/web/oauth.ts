@@ -47,7 +47,11 @@ router.post('/get_url', async (ctx: Koa.ParameterizedContext): Promise<never|voi
 	else
 	{ 
 		const instanceType = await detectInstance(`https://${hostName}`);
-		if (instanceType === 'misskey')
+		if (
+			instanceType === 'misskey' ||
+			instanceType === 'cherrypick' ||
+			instanceType === 'Castella'
+		)
 		{
 			let app = await MastodonApp.findOne( { hostName, appBaseUrl: BASE_URL, redirectUri } );
 			if (!app) // if it's the first time user from this instance is using quesdon

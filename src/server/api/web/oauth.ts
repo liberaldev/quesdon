@@ -50,7 +50,7 @@ router.post('/get_url', async (ctx: Koa.ParameterizedContext): Promise<never|voi
 		if (
 			instanceType === 'misskey' ||
 			instanceType === 'cherrypick' ||
-			instanceType === 'Castella'
+			instanceType === 'castella'
 		)
 		{
 			let app = await MastodonApp.findOne( { hostName, appBaseUrl: BASE_URL, redirectUri } );

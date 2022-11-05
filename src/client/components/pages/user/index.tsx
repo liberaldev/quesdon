@@ -45,7 +45,7 @@ export class PageUserIndex extends React.Component<Props, State>
 				<p>
                     님의 {user.questionBoxName || '질문함'}&nbsp;
 					<a href={user.url || `https://${user.hostName}/@${user.acct.split('@')[0]}`}
-						rel="nofollow">
+						rel="nofollow me">
                         Mastodon 프로필
 					</a>
 				</p>

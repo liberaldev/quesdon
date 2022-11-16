@@ -6,6 +6,7 @@ import { Title } from '../common/title';
 
 interface State {
     loading: boolean;
+	defaultInstance: string;
 }
 
 export class PageLogin extends React.Component<{}, State> 
@@ -14,20 +15,21 @@ export class PageLogin extends React.Component<{}, State>
 	{
 		super(props);
 		this.state = {
-			loading: false
+			loading: false,
+			defaultInstance: 'planet.moe'
 		};
 	}
 
 	render() 
 	{
-		const { loading } = this.state;
+		const { loading, defaultInstance } = this.state;
 		return <div>
 			<Title>로그인</Title>
 			<h1>로그인</h1>
 			<p>사용중인 Mastodon 계정이 있는 인스턴스를 입력해 주세요.</p>
 			<form action="javascript://" onSubmit={this.send.bind(this)}>
 				<FormGroup>
-					<Input name="instance" placeholder="planet.moe" list="major-instances"/>
+					<Input name="instance" placeholder={defaultInstance} list="major-instances"/>
 					<datalist id="major-instances">
 						{majorInstances.map((instance) => <option value={instance} />)}
 					</datalist>

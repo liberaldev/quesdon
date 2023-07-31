@@ -10,7 +10,7 @@ html
 		script window.GIT_VERSION="#{GIT_COMMIT}"
 		- const siteName = "Quesdon@Planet"
 		if profile
-			- const title = `${profile.name}님의 ${questionBoxName || '질문함'}`
+			- const title = `${profile.name}님의 ${profile.questionBoxName || '질문함'}`
 			- const description = profile.description || `${title} 입니다`
 			meta(name="twitter:card", content="summary")
 			meta(property="og:site_name", content=siteName)
@@ -20,15 +20,18 @@ html
 			meta(property="og:image" content=profile.avatarUrl)
 			link(rel="me",href=profile.url)
 		else
+			- const description = "Mastodon에서 사용할 수 있는 askfm스러운 무언가"
 			meta(property="og:site_name", content=siteName)
 			meta(property="og:title", content=siteName)
-			meta(property="og:description", content="Mastodon에서 사용할 수 있는 askfm스러운 무언가")
+			meta(name="description", content=description)
+			meta(property="og:description", content=description)
+			
 		script(src="https://cdn.polyfill.io/v2/polyfill.js?features=fetch")
 		script(src="/assets/bundle.js?version="+GIT_COMMIT)
 	body
 		#root
 			p ...어? 혹시 페이지가 나오지 않나요??
-			p 불편을 끼쳐 드려 죄송해요. 새로고침을 해 보시고, 만약 그래도 이 화면만 계속 뜬다면 아래 동작 환경을 충족하는지 확인 후 Mastodon @planet@planet.moe 에 문의해 주세요.
+			p 불편을 끼쳐 드려 죄송해요. <noscript>현재 사용하시는 브라우저는 자바스크립트 기능이 비활성화 되어 있거나 자바스크립트를 지원하지 않는 브라우저에요. 자바스크립트를 지원하지 않는 브라우저를 사용할 경우 자바스크립트를 지원하는 브라우저로 전환하시고, 현재 사용하신 브라우저가 자바스크립트를 지원한다면 자바스크립트 기능을 활성화 하신 다음 </noscript>새로고침을 해 보시고, 만약 그래도 이 화면만 계속 뜬다면 아래 동작 환경을 충족하는지 확인 후 Mastodon @planet@planet.moe 에 문의해 주세요.
 			h2 동작 환경
 			ul
 				li iOS 
@@ -37,3 +40,4 @@ html
 				li Chrome 63 이상
 				li Firefox 57 이상
 			p Edge, Internet Explorer는 지원 대상이 아니라서 오류가 발생할 수 있어요. Firefox나 Google Chrome을 추천드려요.
+			p Quesdon은 클라이언트 단에서 렌더링을 하기에 자바스크립트를 지원하지 않는 브라우저에서는 사용할 수 없어요. 

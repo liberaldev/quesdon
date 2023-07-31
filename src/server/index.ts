@@ -26,7 +26,8 @@ router.use('/api', apiRouter.routes());
 
 router.get('/*', async (ctx: Koa.ParameterizedContext) => 
 {
-	let user;
+	let user, mastodonUrl;
+	const path = ctx.request.path.toString();
 	if (ctx.session.user) 
 	{
 		user = await User.findById(ctx.session.user);
@@ -34,11 +35,19 @@ router.get('/*', async (ctx: Koa.ParameterizedContext) =>
 		user = new Buffer(user, 'binary').toString('base64');
 	}
 	if (!ctx.session.csrfToken)
+	{
 		ctx.session.csrfToken = rndstr();
+	}
+	if (path.match(/@/g)?.length as number === 2)
+	{
+		const profile = await User.findOne({acctLower: path.substring(2).toLowerCase()});
+		mastodonUrl = profile?.url;
+	}
 	return ctx.render('index', 
 		{
 			GIT_COMMIT,
 			user,
+			mastodonUrl,
 			csrfToken: ctx.session.csrfToken
 		});
 });

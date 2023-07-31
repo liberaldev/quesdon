@@ -8,6 +8,8 @@ html
 			script window.USER=undefined
 		script window.CSRF_TOKEN="#{csrfToken}"
 		script window.GIT_VERSION="#{GIT_COMMIT}"
+		if mastodonUrl
+			link(rel="me",href=mastodonUrl)
 		script(src="https://cdn.polyfill.io/v2/polyfill.js?features=fetch")
 		script(src="/assets/bundle.js?version="+GIT_COMMIT)
 	body

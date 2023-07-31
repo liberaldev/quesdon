@@ -26,7 +26,7 @@ router.use('/api', apiRouter.routes());
 
 router.get('/*', async (ctx: Koa.ParameterizedContext) => 
 {
-	let user, mastodonUrl;
+	let user, profile;
 	const path = ctx.request.path.toString();
 	if (ctx.session.user) 
 	{
@@ -40,14 +40,13 @@ router.get('/*', async (ctx: Koa.ParameterizedContext) =>
 	}
 	if (path.match(/@/g)?.length as number === 2)
 	{
-		const profile = await User.findOne({acctLower: path.substring(2).toLowerCase()});
-		mastodonUrl = profile?.url;
+		profile = await User.findOne({acctLower: path.substring(2).toLowerCase()});
 	}
 	return ctx.render('index', 
 		{
 			GIT_COMMIT,
 			user,
-			mastodonUrl,
+			profile,
 			csrfToken: ctx.session.csrfToken
 		});
 });

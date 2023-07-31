@@ -8,8 +8,21 @@ html
 			script window.USER=undefined
 		script window.CSRF_TOKEN="#{csrfToken}"
 		script window.GIT_VERSION="#{GIT_COMMIT}"
-		if mastodonUrl
-			link(rel="me",href=mastodonUrl)
+		- const siteName = "Quesdon@Planet"
+		if profile
+			- const title = `${profile.name}님의 ${questionBoxName || '질문함'}`
+			- const description = profile.description || `${title} 입니다`
+			meta(name="twitter:card", content="summary")
+			meta(property="og:site_name", content=siteName)
+			meta(property="og:title", content=title)
+			meta(name="description", content=description)
+			meta(property="og:description", content=description)
+			meta(property="og:image" content=profile.avatarUrl)
+			link(rel="me",href=profile.url)
+		else
+			meta(property="og:site_name", content=siteName)
+			meta(property="og:title", content=siteName)
+			meta(property="og:description", content="Mastodon에서 사용할 수 있는 askfm스러운 무언가")
 		script(src="https://cdn.polyfill.io/v2/polyfill.js?features=fetch")
 		script(src="/assets/bundle.js?version="+GIT_COMMIT)
 	body

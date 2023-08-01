@@ -1,5 +1,5 @@
 const webpack = require("webpack")
-const UglifyJSPlugin = require("uglifyjs-webpack-plugin")
+const TerserPlugin = require("terser-webpack-plugin")
 const isProduction = process.env.NODE_ENV == "production"
 
 module.exports = {
@@ -28,9 +28,9 @@ module.exports = {
     ],
     module: {
         rules: [
-            {test: /\.css$/, loader: 'style-loader!css-loader'},
+            {test: /\.css$/, use: ['style-loader', 'css-loader']},
             {test: /\.(woff2?|ttf|eot|svg)$/, loader: 'file-loader'},
-            {test: /\.tsx?$/, loader: isProduction ? 'babel-loader!ts-loader' : 'ts-loader'},
+            {test: /\.tsx?$/, use: isProduction ? ['babel-loader',' ts-loader'] : ['ts-loader']},
         ]
     },
     resolve: {
@@ -38,8 +38,8 @@ module.exports = {
     },
     optimization: {
         minimizer: isProduction ? [
-            new UglifyJSPlugin({
-                uglifyOptions: {
+            new TerserPlugin({
+                terserOptions: {
                     keep_classnames: true
                 }
             })

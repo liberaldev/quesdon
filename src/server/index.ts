@@ -10,6 +10,7 @@ import rndstr from 'rndstr';
 import apiRouter from './api';
 import { GIT_COMMIT, PORT, SECRET_KEY } from './config';
 import { User } from './db/index';
+import josa from '../common/josa';
 
 const app = new Koa();
 
@@ -26,7 +27,8 @@ router.use('/api', apiRouter.routes());
 
 router.get('/*', async (ctx: Koa.ParameterizedContext) => 
 {
-	let user;
+	let user, profile;
+	const path = ctx.request.path.toString();
 	if (ctx.session.user) 
 	{
 		user = await User.findById(ctx.session.user);
@@ -34,11 +36,19 @@ router.get('/*', async (ctx: Koa.ParameterizedContext) =>
 		user = new Buffer(user, 'binary').toString('base64');
 	}
 	if (!ctx.session.csrfToken)
+	{
 		ctx.session.csrfToken = rndstr();
+	}
+	if (path.match(/@/g)?.length as number === 2)
+	{
+		profile = await User.findOne({acctLower: path.substring(2).toLowerCase()});
+	}
 	return ctx.render('index', 
 		{
 			GIT_COMMIT,
 			user,
+			profile,
+			josa,
 			csrfToken: ctx.session.csrfToken
 		});
 });

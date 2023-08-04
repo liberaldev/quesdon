@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Helmet } from 'react-helmet';
 import { Children } from 'react';
+import { Helmet } from 'react-helmet';
 
 export class Title extends React.Component 
 {

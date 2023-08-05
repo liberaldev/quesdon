@@ -26,7 +26,7 @@ export class PageMyFollowers extends React.Component<{}, State>
 	render() 
 	{
 		return <div>
-			<Title>Quesdon@Planet을 사용 중인 팔로워 목록 - 마이페이지</Title>
+			<Title>Quesdon@Planet을 사용 중인 팔로워 목록</Title>
 			<h1>Quesdon@Planet을 사용 중인 팔로워 목록</h1>
 			<ul>
 				{this.state.accounts.map((user) => <li><UserLink {...user} /></li>)}

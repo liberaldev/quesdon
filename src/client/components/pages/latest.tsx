@@ -31,7 +31,7 @@ export class PageLatest extends React.Component<{}, State>
 			questions
 		} = this.state;
 		return <div>
-			<Title>최근 답변 - Quesdon</Title>
+			<Title>최근 답변</Title>
 			<h2>최근 올라온 답변들 <Button color="white" onClick={this.load.bind(this)} disabled={loading}>새로고침</Button></h2>
 			{ loading
 				? <Loading/>

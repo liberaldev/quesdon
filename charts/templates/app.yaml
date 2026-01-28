@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: quesdon
+spec:
+  type: ClusterIP
+  ports:
+    - port: 17323
+      targetPort: 17323
+      name: web
+  selector:
+    app: quesdon
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quesdon
+  annotations:
+    secrets.infisical.com/auto-reload: "true"
+  labels:
+    app: quesdon
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quesdon
+  template:
+    metadata:
+      labels:
+        app: quesdon
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: quesdon
+          image: ghcr.io/byulmaru/quesdon
+          envFrom:
+            - secretRef:
+                name: env
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: oci.oraclecloud.com/oke-is-preemptible
+                    operator: Exists
+                    values: []
+      tolerations:
+        - key: "oci.oraclecloud.com/oke-is-preemptible"
+          operator: "Equal"
+          value: "present"
+          effect: "NoSchedule"
+      priorityClassName: preemptible
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: quesdon
+spec:
+  minAvailable: 0
+  selector:
+    matchLabels:
+      app: quesdon

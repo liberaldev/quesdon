@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - quesdon.planet.moe
+      secretName: certificate
+  rules:
+    - host: quesdon.planet.moe
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: quesdon
+                port:
+                  number: 17323
